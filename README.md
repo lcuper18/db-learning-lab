@@ -69,11 +69,11 @@ sudo usermod -aG docker $USER
 ### 1. Clonar o descargar el proyecto
 
 ```bash
-git clone <url-del-repositorio> db-learning-lab
+git clone https://github.com/lcuper18/db-learning-lab.git db-learning-lab
 cd db-learning-lab
 ```
 
-O descargar el archivo ZIP y descomprimir en el servidor.
+O descargar el archivo ZIP desde [github.com/lcuper18/db-learning-lab](https://github.com/lcuper18/db-learning-lab) y descomprimir en el servidor.
 
 ### 2. Configurar las variables de entorno
 
@@ -331,11 +331,11 @@ sudo usermod -aG docker $USER
 ### 1. Clone or download the project
 
 ```bash
-git clone <repository-url> db-learning-lab
+git clone https://github.com/lcuper18/db-learning-lab.git db-learning-lab
 cd db-learning-lab
 ```
 
-Or download the ZIP file and extract it on the server.
+Or download the ZIP file from [github.com/lcuper18/db-learning-lab](https://github.com/lcuper18/db-learning-lab) and extract it on the server.
 
 ### 2. Configure environment variables
 
