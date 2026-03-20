@@ -48,21 +48,31 @@
 
 El **servidor** (PC del docente, servidor del lab o VPS) necesita:
 
-| Requisito         | Versión mínima | Verificar con        |
-|-------------------|---------------|----------------------|
-| Docker Engine     | 24.x          | `docker --version`   |
-| Docker Compose    | v2            | `docker compose version` |
-| Puertos libres    | 3306, 3050, 5432, 8080 | —            |
+| Requisito              | Versión mínima | Verificar con            |
+|------------------------|---------------|------------------------|
+| Docker Engine          | 24.x          | `docker --version`       |
+| Docker Compose V2      | 2.x           | `docker compose version` |
+| Puertos libres         | 3306, 3050, 5432, 8080 | —        |
 
 Las **PCs de los estudiantes** solo necesitan un navegador web para acceder a Adminer, o un cliente SQL como [DBeaver](https://dbeaver.io/) (gratuito).
 
 ### Instalar Docker en el servidor (Ubuntu/Debian)
 
 ```bash
+# 1. Instalar Docker Engine
 curl -fsSL https://get.docker.com | sh
+
+# 2. Instalar el plugin Docker Compose V2 (¡paso necesario!)
+sudo apt-get install -y docker-compose-v2
+
+# 3. Añadir el usuario al grupo docker (para no necesitar sudo)
 sudo usermod -aG docker $USER
 # Cerrar sesión y volver a entrar para aplicar el grupo
 ```
+
+> **Nota:** Si Docker se instaló desde los repositorios de Ubuntu (`apt install docker.io`), el plugin Compose no viene incluido. Hay que instalarlo por separado con `apt-get install docker-compose-v2`.
+
+> **Nota:** Los scripts **no requieren `sudo`** si el usuario está en el grupo `docker`. Ejecutar `sudo bash ./scripts/start.sh` puede causar errores porque root usa un PATH diferente.
 
 ## Instalación
 
@@ -307,21 +317,31 @@ ORDER BY promedio DESC;
 
 The **server** (teacher's PC, lab server, or VPS) requires:
 
-| Requirement       | Min. version | Check with           |
-|-------------------|-------------|----------------------|
-| Docker Engine     | 24.x        | `docker --version`   |
-| Docker Compose    | v2          | `docker compose version` |
-| Open ports        | 3306, 3050, 5432, 8080 | —          |
+| Requirement            | Min. version | Check with               |
+|------------------------|-------------|---------------------------|
+| Docker Engine          | 24.x        | `docker --version`        |
+| Docker Compose V2      | 2.x         | `docker compose version`  |
+| Open ports             | 3306, 3050, 5432, 8080 | —          |
 
 **Student PCs** only need a web browser for Adminer, or a SQL client like [DBeaver](https://dbeaver.io/) (free).
 
 ### Install Docker on the server (Ubuntu/Debian)
 
 ```bash
+# 1. Install Docker Engine
 curl -fsSL https://get.docker.com | sh
+
+# 2. Install the Docker Compose V2 plugin (required!)
+sudo apt-get install -y docker-compose-v2
+
+# 3. Add your user to the docker group (to run without sudo)
 sudo usermod -aG docker $USER
 # Log out and back in to apply the group
 ```
+
+> **Note:** If Docker was installed from Ubuntu's official repos (`apt install docker.io`), the Compose plugin is NOT included. Install it separately with `apt-get install docker-compose-v2`.
+
+> **Note:** The scripts **do not require `sudo`** if your user is in the `docker` group. Running `sudo bash ./scripts/start.sh` may fail because root uses a different PATH.
 
 ## Installation
 
