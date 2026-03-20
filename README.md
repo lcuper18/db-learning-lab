@@ -216,33 +216,30 @@ Los scripts están pensados para ser ejecutados por el docente o el administrado
 # Detener
 ./scripts/stop.sh
 
-# Reiniciar limpio (borra datos — confirma con 's')
+# Reiniciar limpio (borra datos — escribe 's' para confirmar)
 ./scripts/reset.sh
 ```
 
+> **Nota:** Si cambias `DB_NAME` en `.env`, actualiza también la línea `USE labdb;` al inicio de `init/mariadb/01-schema.sql` para que coincida.
+
 ## Inicialización de Firebird (manual)
 
-A diferencia de MariaDB y PostgreSQL, el contenedor de Firebird no ejecuta scripts SQL automáticamente al arrancar. Sigue estos pasos **una vez** después del primer `start.sh`:
+A diferencia de MariaDB y PostgreSQL, el contenedor de Firebird no ejecuta scripts SQL automáticamente al arrancar. Sin embargo, la base de datos **sí se crea sola** gracias a la variable `FIREBIRD_DATABASE` del `docker-compose.yml`. Solo es necesario cargar el esquema de tablas **una vez** después del primer `start.sh`.
 
+**La forma más sencilla — Adminer:**
+1. Abrir Adminer en `http://<IP_SERVIDOR>:8080`
+2. Conectar: Sistema `Firebird` · Servidor `firebird` · Usuario `SYSDBA` · Contraseña `<DB_PASSWORD>` · Base de datos `/firebird/data/LABDB`
+3. Ir a **Importar** y subir `init/firebird/01-schema.sql`
+
+**Por terminal:**
 ```bash
-# 1. Crear la base de datos dentro del contenedor
-docker exec -it firebird_container isql-fb \
-  -user SYSDBA -password masterkey \
-  -input /dev/null \
-  employee
-
-# 2. Alternativamente, usar el script de ejemplo:
 docker exec -i firebird_container isql-fb \
-  -user LABUSER -password labpass123 \
+  -user SYSDBA -password labpass123 \
   /firebird/data/LABDB \
   < init/firebird/01-schema.sql
 ```
 
-> **Nota:** Si la base de datos aún no existe, primero créala desde Adminer conectándote como `SYSDBA` con contraseña `masterkey` (la contraseña de root de Firebird es `ISC_PASSWORD` del compose, que en la imagen jacobalberty equivale al valor de `DB_PASSWORD`).
-
-La forma más sencilla es usar **Adminer**:
-1. Conectar como Sistema: `Firebird`, Servidor: `firebird`, Usuario: `SYSDBA`, Contraseña: `<DB_PASSWORD>`, Base de datos: `/firebird/data/LABDB`
-2. Ir a "Importar" y subir `init/firebird/01-schema.sql`
+> **Nota:** Sustituye `labpass123` por el valor de `DB_PASSWORD` de tu archivo `.env`.
 
 ## Base de datos de ejemplo: Sistema Escolar
 
@@ -478,25 +475,30 @@ These scripts are intended to be run by the teacher or lab administrator.
 # Stop
 ./scripts/stop.sh
 
-# Full reset (deletes data — confirms with 's'/'y')
+# Full reset (deletes data — type 's' to confirm)
 ./scripts/reset.sh
 ```
 
 ## Firebird Initialization (manual)
 
-Unlike MariaDB and PostgreSQL, the Firebird container does not execute SQL scripts automatically on startup. Follow these steps **once** after the first `start.sh`:
+Unlike MariaDB and PostgreSQL, the Firebird container does not execute SQL scripts automatically on startup. However, the database **is created automatically** via the `FIREBIRD_DATABASE` variable in `docker-compose.yml`. You only need to load the schema **once** after the first `start.sh`.
 
 **Via Adminer (easiest):**
-1. Connect as System: `Firebird`, Server: `firebird`, User: `SYSDBA`, Password: `<DB_PASSWORD>`, Database: `/firebird/data/LABDB`
-2. Go to "Import" and upload `init/firebird/01-schema.sql`
+1. Open Adminer at `http://<SERVER_IP>:8080`
+2. Connect: System `Firebird` · Server `firebird` · User `SYSDBA` · Password `<DB_PASSWORD>` · Database `/firebird/data/LABDB`
+3. Go to **Import** and upload `init/firebird/01-schema.sql`
 
 **Via terminal:**
 ```bash
 docker exec -i firebird_container isql-fb \
-  -user LABUSER -password labpass123 \
+  -user SYSDBA -password labpass123 \
   /firebird/data/LABDB \
   < init/firebird/01-schema.sql
 ```
+
+> **Note:** Replace `labpass123` with the value of `DB_PASSWORD` from your `.env` file.
+
+> **Note:** If you change `DB_NAME` in `.env`, also update the hardcoded database name `USE labdb;` at the top of `init/mariadb/01-schema.sql`.
 
 ## Sample Database: School System
 
