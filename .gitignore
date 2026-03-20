@@ -1,0 +1,14 @@
+# Variables de entorno reales (nunca subir al repositorio)
+.env
+
+# Datos persistentes de Docker (si se usan bind-mounts locales)
+data/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+*.swp
+*.swo
+
