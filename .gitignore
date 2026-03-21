@@ -4,6 +4,9 @@
 # Datos persistentes de Docker (si se usan bind-mounts locales)
 data/
 
+# Copias de seguridad generadas por backup.sh/.bat
+backups/
+
 # Sistema operativo
 .DS_Store
 Thumbs.db

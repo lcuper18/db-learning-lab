@@ -28,8 +28,5 @@ echo "Deteniendo contenedores y eliminando volúmenes..."
 docker compose down -v
 
 echo "Reiniciando entorno desde cero..."
-docker compose up -d
-
-echo ""
-echo "Entorno reiniciado con datos de ejemplo frescos."
-echo "  Adminer -> http://localhost:8080"
+# Reutilizar start.sh para que Firebird también se inicialice correctamente
+exec "$(dirname "$0")/start.sh"

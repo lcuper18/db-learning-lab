@@ -1,6 +1,6 @@
 services:
   mariadb:
-    image: mariadb:latest
+    image: mariadb:lts
     container_name: mariadb_container
     restart: 'no'
     environment:
@@ -9,15 +9,21 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./init/mariadb:/docker-entrypoint-initdb.d:ro
     networks:
       - db_network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   postgresql:
-    image: postgres:latest
+    image: postgres:17
     container_name: postgresql_container
     restart: 'no'
     environment:
@@ -25,15 +31,21 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgresql_data:/var/lib/postgresql/data
       - ./init/postgresql:/docker-entrypoint-initdb.d:ro
     networks:
       - db_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   firebird:
-    image: jacobalberty/firebird:latest
+    image: jacobalberty/firebird:v4.0
     container_name: firebird_container
     restart: 'no'
     environment:
@@ -42,29 +54,72 @@ services:
       FIREBIRD_PASSWORD: ${DB_PASSWORD}
       FIREBIRD_DATABASE: ${DB_NAME}
     ports:
-      - "3050:3050"
+      - "127.0.0.1:3050:3050"
     volumes:
       - firebird_data:/firebird/data
+      - ./init/firebird:/firebird/init:ro
     networks:
       - db_network
+    healthcheck:
+      test: ["CMD-SHELL", "isql-fb -user sysdba -password $ISC_PASSWORD \"/firebird/data/$FIREBIRD_DATABASE\" -e \"SELECT 1 FROM RDB\\$DATABASE;\" > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
   adminer:
-    image: adminer:latest
+    image: adminer:4
     container_name: adminer_container
     restart: 'no'
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     networks:
       - db_network
     depends_on:
-      - mariadb
-      - postgresql
-      - firebird
+      mariadb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      firebird:
+        condition: service_healthy
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver_container
+    restart: 'no'
+    environment:
+      CB_SERVER_NAME: "DB Learning Lab"
+      CB_SERVER_URL: "http://localhost:8978/"
+      CB_ADMIN_NAME: ${CB_ADMIN_NAME}
+      CB_ADMIN_PASSWORD: ${CB_ADMIN_PASSWORD}
+      CLOUDBEAVER_APP_ANONYMOUS_ACCESS_ENABLED: "false"
+      CLOUDBEAVER_APP_SUPPORTS_CUSTOM_CONNECTIONS: "true"
+    ports:
+      - "127.0.0.1:8978:8978"
+    volumes:
+      - cloudbeaver_workspace:/opt/cloudbeaver/workspace
+      - ./init/cloudbeaver:/opt/cloudbeaver/workspace-init:ro
+    networks:
+      - db_network
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgresql:
+        condition: service_healthy
+      firebird:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8978/api/session || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
 volumes:
   mariadb_data:
   postgresql_data:
   firebird_data:
+  cloudbeaver_workspace:
 
 networks:
   db_network:

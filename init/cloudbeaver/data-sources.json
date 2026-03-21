@@ -1,0 +1,65 @@
+{
+  "folders": {},
+  "connections": {
+    "mariadb-lab": {
+      "provider": "mysql",
+      "driver": "mysql8",
+      "name": "MariaDB — Lab",
+      "save-password": true,
+      "show-system-objects": false,
+      "configuration": {
+        "host": "mariadb",
+        "port": "3306",
+        "database": "labdb",
+        "url": "jdbc:mysql://mariadb:3306/labdb",
+        "configurationType": "MANUAL",
+        "type": "dev",
+        "closeIdleConnection": true
+      },
+      "credentials": {
+        "user": "labuser",
+        "password": "labpass123"
+      }
+    },
+    "postgresql-lab": {
+      "provider": "postgresql",
+      "driver": "postgres-jdbc",
+      "name": "PostgreSQL — Lab",
+      "save-password": true,
+      "show-system-objects": false,
+      "configuration": {
+        "host": "postgresql",
+        "port": "5432",
+        "database": "labdb",
+        "url": "jdbc:postgresql://postgresql:5432/labdb",
+        "configurationType": "MANUAL",
+        "type": "dev",
+        "closeIdleConnection": true
+      },
+      "credentials": {
+        "user": "labuser",
+        "password": "labpass123"
+      }
+    },
+    "firebird-lab": {
+      "provider": "firebird",
+      "driver": "firebird3",
+      "name": "Firebird — Lab",
+      "save-password": true,
+      "show-system-objects": false,
+      "configuration": {
+        "host": "firebird",
+        "port": "3050",
+        "database": "/firebird/data/LABDB",
+        "url": "jdbc:firebirdsql://firebird:3050//firebird/data/LABDB",
+        "configurationType": "MANUAL",
+        "type": "dev",
+        "closeIdleConnection": true
+      },
+      "credentials": {
+        "user": "LABUSER",
+        "password": "labpass123"
+      }
+    }
+  }
+}
